@@ -13,20 +13,21 @@
 #     --src_lang cpp --tgt_lang java \
 #     --model_path trained_model.pth < input_code.cpp
 #
-
-from XLM.src.utils import AttrDict
-from XLM.src.model import build_model
-from XLM.src.data.dictionary import Dictionary, BOS_WORD, EOS_WORD, PAD_WORD, UNK_WORD, MASK_WORD
-import preprocessing.src.code_tokenizer as code_tokenizer
-import torch
-import fastBPE
-import argparse
 import os
 import sys
 
 parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-sys.path.append(parent_dir_name + "/TransCoder")
+sys.path.append(parent_dir_name)
+import argparse
+import fastBPE
+import torch
 
+parent_dir_name = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+sys.path.append(parent_dir_name + "/TransCoder")
+import preprocessing.src.code_tokenizer as code_tokenizer
+from XLM.src.data.dictionary import Dictionary, BOS_WORD, EOS_WORD, PAD_WORD, UNK_WORD, MASK_WORD
+from XLM.src.model import build_model
+from XLM.src.utils import AttrDict
 
 SUPPORTED_LANGUAGES = ['cpp', 'java', 'python']
 
@@ -166,12 +167,10 @@ def create_translator(beam_size=1, model_path="model_2.pth", src_lang='python', 
         'src_lang': src_lang,
         'tgt_lang': tgt_lang
     }
-
     class objectview(object):
-        def __init__(self, d):
-            self.__dict__ = d
+      def __init__(self, d):
+          self.__dict__ = d
     params = objectview(params)
-
     # check parameters
     # assert os.path.isfile(
     #     params.model_path), f"The path to the model checkpoint is incorrect: {params.model_path}"
@@ -193,7 +192,7 @@ if __name__ == '__main__':
 
     with torch.no_grad():
         output = translator.translate(
-            input, lang1=params["src_lang"], lang2=params["tgt_lang"], beam_size=params["beam_size"])
+            input, lang1=params.src_lang, lang2=params.tgt_lang, beam_size=params.beam_size)
 
     for out in output:
         print("=" * 20)
