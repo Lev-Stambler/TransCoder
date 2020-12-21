@@ -79,7 +79,8 @@ class Translator:
         assert self.reloaded_params.mask_index == self.dico.index(MASK_WORD)
 
         # build model / reload weights
-        self.reloaded_params['reload_model'] = ','.join([params.model_path] * 2)
+        self.reloaded_params['reload_model'] = ','.join(
+            [params.model_path] * 2)
         encoder, decoder = build_model(self.reloaded_params, self.dico)
 
         self.encoder = encoder[0]
@@ -154,22 +155,30 @@ class Translator:
             return results
 
 
-if __name__ == '__main__':
+def create_translator(beam_size=1, model_path=model_2.pth, src_lang='python', tgt_lang='java'):
     # generate parser / parse parameters
-    parser = get_parser()
-    params = parser.parse_args()
-
+    params = {
+        'BPE_path': 'TransCoder/data/BPE_with_comments_codes',
+        'beam_size': beam_size,
+        'model_path': model_path,
+        'src_lang': src_lang,
+        'tgt_lang': tgt_lang
+    }
     # check parameters
-    assert os.path.isfile(
-        params.model_path), f"The path to the model checkpoint is incorrect: {params.model_path}"
-    assert os.path.isfile(
-        params.BPE_path), f"The path to the BPE tokens is incorrect: {params.BPE_path}"
-    assert params.src_lang in SUPPORTED_LANGUAGES, f"The source language should be in {SUPPORTED_LANGUAGES}."
-    assert params.tgt_lang in SUPPORTED_LANGUAGES, f"The target language should be in {SUPPORTED_LANGUAGES}."
+    # assert os.path.isfile(
+    #     params.model_path), f"The path to the model checkpoint is incorrect: {params.model_path}"
+    # assert os.path.isfile(
+    #     params.BPE_path), f"The path to the BPE tokens is incorrect: {params.BPE_path}"
+    # assert params.src_lang in SUPPORTED_LANGUAGES, f"The source language should be in {SUPPORTED_LANGUAGES}."
+    # assert params.tgt_lang in SUPPORTED_LANGUAGES, f"The target language should be in {SUPPORTED_LANGUAGES}."
 
     # Initialize translator
     translator = Translator(params)
+    return translator
 
+
+if __name__ == '__main__':
+    translator = create_translator()
     # read input code from stdin
     src_sent = []
     input = sys.stdin.read().strip()
