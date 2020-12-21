@@ -321,7 +321,7 @@ class TransformerModel(nn.Module):
 
     def forward(self, mode, **kwargs):
         """
-        Forward function with different forward modes.
+        Forward function with  different forward modes.
         ### Small hack to handle PyTorch distributed.
         """
         if mode == 'fwd':
@@ -331,6 +331,17 @@ class TransformerModel(nn.Module):
         else:
             raise Exception("Unknown mode: %s" % mode)
 
+    # For decoder:
+    """
+        x : words already predicted, size with (sequence len - 1 then 2 then 3 etc, batch size)
+        lengths: tensor of [len of x]
+        causal: True
+        src_enc: The output from the encoder's feed forward
+              size (batch size, seq len (i.e.) 362, 10sio24)
+        src_len: enc output length
+        positions: as integers counting up
+
+    """ 
     def fwd(self, x, lengths, causal, src_enc=None, src_len=None, positions=None, langs=None, use_cache=False):
         """
         Inputs:
