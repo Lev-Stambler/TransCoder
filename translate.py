@@ -102,6 +102,23 @@ class Translator:
         self.decoder.eval()
         self.bpe_model = fastBPE.fastBPE(os.path.abspath(params.BPE_path))
 
+    # Only for JAVA rn lmao
+    def tokenize(self, input, lang1_id, device="cuda:0"):
+      tokenizer = getattr(code_tokenizer, f'tokenize_java')
+      DEVICE = device
+      tokens = [t for t in tokenizer(input)]
+      tokens = self.bpe_model.apply(tokens)
+      tokens = ['</s>'] + tokens + ['</s>']
+      input = " ".join(tokens)
+      # create batch
+      len1 = len(input.split())
+      len1 = torch.LongTensor(1).fill_(len1).to(DEVICE)
+
+      x1 = torch.LongTensor([self.dico.index(w)
+                              for w in input.split()]).to(DEVICE)[:, None]
+      langs1 = x1.clone().fill_(lang1_id)
+      return x1, len1, langs1
+
     def translate(self, input, lang1, lang2, n=1, beam_size=1, sample_temperature=None, device='cuda:0'):
         with torch.no_grad():
             assert lang1 in {'python', 'java', 'cpp'}, lang1

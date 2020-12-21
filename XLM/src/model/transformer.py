@@ -340,7 +340,7 @@ class TransformerModel(nn.Module):
               size (batch size, seq len (i.e.) 362, 10sio24)
         src_len: enc output length
         positions: as integers counting up
-
+        langs: (slen (rel to x), bs)
     """ 
     def fwd(self, x, lengths, causal, src_enc=None, src_len=None, positions=None, langs=None, use_cache=False):
         """
