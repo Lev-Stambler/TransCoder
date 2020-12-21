@@ -168,7 +168,7 @@ def create_translator(beam_size=1, model_path="model_2.pth", src_lang='python', 
         'src_lang': src_lang,
         'tgt_lang': tgt_lang
     }
-    params = bunchify(params)
+    # params = bunchify(params)
     # check parameters
     # assert os.path.isfile(
     #     params.model_path), f"The path to the model checkpoint is incorrect: {params.model_path}"
