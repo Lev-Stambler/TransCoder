@@ -19,6 +19,7 @@ import os
 import sys
 
 import fastBPE
+from bunch import bunchify
 import torch
 
 import preprocessing.src.code_tokenizer as code_tokenizer
@@ -164,6 +165,7 @@ def create_translator(beam_size=1, model_path=model_2.pth, src_lang='python', tg
         'src_lang': src_lang,
         'tgt_lang': tgt_lang
     }
+    params = bunchify(params)
     # check parameters
     # assert os.path.isfile(
     #     params.model_path), f"The path to the model checkpoint is incorrect: {params.model_path}"
@@ -174,18 +176,18 @@ def create_translator(beam_size=1, model_path=model_2.pth, src_lang='python', tg
 
     # Initialize translator
     translator = Translator(params)
-    return translator
+    return translator, params
 
 
 if __name__ == '__main__':
-    translator = create_translator()
+    translator, params = create_translator()
     # read input code from stdin
     src_sent = []
     input = sys.stdin.read().strip()
 
     with torch.no_grad():
         output = translator.translate(
-            input, lang1=params.src_lang, lang2=params.tgt_lang, beam_size=params.beam_size)
+            input, lang1=params["src_lang"], lang2=params["tgt_lang"], beam_size=params["beam_size"])
 
     for out in output:
         print("=" * 20)
