@@ -105,17 +105,17 @@ class Translator:
     # Only for JAVA rn lmao
     def tokenize(self, input, lang1_id, device="cuda:0"):
       tokenizer = getattr(code_tokenizer, f'tokenize_java')
-      DEVICE = device
+    #   DEVICE = device
       tokens = [t for t in tokenizer(input)]
       tokens = self.bpe_model.apply(tokens)
       tokens = ['</s>'] + tokens + ['</s>']
       input = " ".join(tokens)
       # create batch
       len1 = len(input.split())
-      len1 = torch.LongTensor(1).fill_(len1).to(DEVICE)
+      len1 = torch.LongTensor(1).fill_(len1)#.to(DEVICE)
 
       x1 = torch.LongTensor([self.dico.index(w)
-                              for w in input.split()]).to(DEVICE)[:, None]
+                              for w in input.split()])[:, None]#.to(DEVICE)
       langs1 = x1.clone().fill_(lang1_id)
       return x1, len1, langs1
 
