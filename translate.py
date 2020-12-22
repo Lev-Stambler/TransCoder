@@ -115,10 +115,10 @@ class Translator:
       input = " ".join(tokens)
       # create batch
       len1 = len(input.split())
-      len1 = torch.LongTensor(1).fill_(len1)#.to(DEVICE)
+      len1 = torch.tensor([len1]).long()
 
-      x1 = torch.LongTensor([self.dico.index(w)
-                              for w in input.split()])[:, None]#.to(DEVICE)
+      x1 = torch.tensor([self.dico.index(w)
+                              for w in input.split()]).long()[:, None]#.to(DEVICE)
       langs1 = x1.clone().fill_(lang1_id)
       return x1, len1, langs1
 
