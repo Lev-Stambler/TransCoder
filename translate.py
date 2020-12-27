@@ -177,7 +177,7 @@ class Translator:
             return results
 
 
-def create_translator(beam_size=1, model_path="model_1.pth", src_lang='python', tgt_lang='java'):
+def create_translator(beam_size=1, model_path="model_1.pth", src_lang='java', tgt_lang='python'):
     # generate parser / parse parameters
     params = {
         'BPE_path': 'TransCoder/data/BPE_with_comments_codes',
