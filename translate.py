@@ -105,15 +105,16 @@ class Translator:
         self.decoder.eval()
         self.bpe_model = fastBPE.fastBPE(os.path.abspath(params.BPE_path))
 
-    # Only for JAVA rn lmao
-    def tokenize(self, input, lang1="java", device="cuda:0"):
+    def tokenize(self, input, lang1="java", device="cuda:0", pad=False, pad_len=1000):
       assert lang1 in {'python', 'java', 'cpp'}, lang1
       tokenizer = getattr(code_tokenizer, f'tokenize_{lang1}')
     #   DEVICE = device
+      lang1 = lang1 + '_sa'
       lang1_id = self.reloaded_params.lang2id[lang1]
       tokens = [t for t in tokenizer(input)]
       tokens = self.bpe_model.apply(tokens)
-      tokens = ['</s>'] + tokens + ['</s>']
+      pad_toks = [PAD_WORD] * ((pad_len - 3) - len(tokens)) if len(tokens) < (pad_len - 2) and pad else []
+      tokens = ['</s>'] + tokens + pad_toks + ['</s>']
       input = " ".join(tokens)
       # create batch
       len1 = len(input.split())
@@ -132,8 +133,8 @@ class Translator:
             DEVICE = device
             tokenizer = getattr(code_tokenizer, f'tokenize_{lang1}')
             detokenizer = getattr(code_tokenizer, f'detokenize_{lang2}')
-            lang1 += '_sa'
-            lang2 += '_sa'
+            lang1 = lang1 + '_sa'
+            lang2 = lang2 +'_sa'
 
             lang1_id = self.reloaded_params.lang2id[lang1]
             lang2_id = self.reloaded_params.lang2id[lang2]
