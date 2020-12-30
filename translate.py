@@ -106,9 +106,11 @@ class Translator:
         self.bpe_model = fastBPE.fastBPE(os.path.abspath(params.BPE_path))
 
     # Only for JAVA rn lmao
-    def tokenize(self, input, lang1_id, device="cuda:0"):
-      tokenizer = getattr(code_tokenizer, f'tokenize_java')
+    def tokenize(self, input, lang1="java", device="cuda:0"):
+      assert lang1 in {'python', 'java', 'cpp'}, lang1
+      tokenizer = getattr(code_tokenizer, f'tokenize_{lang1}')
     #   DEVICE = device
+      lang1_id = self.reloaded_params.lang2id[lang1]
       tokens = [t for t in tokenizer(input)]
       tokens = self.bpe_model.apply(tokens)
       tokens = ['</s>'] + tokens + ['</s>']
